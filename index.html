@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>EKORUSTIKA</title>
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EKORUSTIKA">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui,-apple-system,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0}
+input,select,textarea{background:#141414;border:1px solid #222;border-radius:16px;padding:0 16px;width:100%}
+input,select{height:56px}
+textarea{padding:16px;resize:none}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px 160px}
+header{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(16px);border-bottom:1px solid #1a1a1a;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;max-width:720px;margin:0 auto}
+.logo{font-weight:900;font-size:22px;letter-spacing:-.03em}
+h1{font-size:30px;font-weight:900;letter-spacing:-.04em;line-height:.95;margin:24px 0 8px}
+.muted{color:#8a8a8a;font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#141414;border:1px solid #1f1f1f;border-radius:20px;padding:20px}
+.num{font-size:30px;font-weight:800}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.list{display:flex;flex-direction:column;gap:12px}
+.item{background:#141414;border:1px solid #1e1e1e;border-radius:18px;padding:16px}
+.badge{font-size:10px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:999px}
+.btn{width:100%;height:60px;border-radius:18px;font-weight:800}
+.btn-w{background:#fff;color:#000}
+.btn-r{background:#c1272d;color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;padding:0 12px calc(12px + env(safe-area-inset-bottom))}
+.navin{max-width:720px;margin:0 auto;background:#141414f2;border:1px solid #232323;border-radius:24px;padding:8px;display:flex}
+.navin button{flex:1;height:56px;border-radius:16px;background:transparent;color:#666;font-size:10px;font-weight:800;letter-spacing:.08em}
+.navin button.on{background:#fff;color:#000}
+.hidden{display:none}
+label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;color:#666;margin:14px 0 8px}
+.search{position:relative;margin:12px 0 16px}
+.search input{height:52px}
+.modal{position:fixed;inset:0;background:#000b;display:grid;place-items:center;padding:20px;z-index:50}
+.box{background:#161616;border:1px solid #242424;border-radius:24px;padding:24px;max-width:360px;width:100%}
+.live{font-size:10px;letter-spacing:.18em;color:#666;font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><span style="color:#c1272d">EKO</span><span style="color:#1f8a3a">RUS</span>TIKA</div>
+  <div class="live">LIVE • OFFLINE</div>
+</header>
+<main class="wrap">
+  <section id="pocetna">
+    <h1>Majstorski<br>pregled.</h1>
+    <p class="muted">Sve montaze na jednom mjestu.</p>
+    <div class="grid2" style="margin-top:20px">
+      <div class="card"><div class="muted">UKUPNO</div><div class="num" id="cCount">0</div><div class="muted">projekata</div></div>
+      <div class="card"><div class="muted">M2</div><div class="num" id="cM2">0</div><div class="muted">kvadrata</div></div>
+      <div class="card" style="grid-column:1/-1"><div class="muted">ZARADA</div><div class="num" id="cEur">0 EUR</div></div>
+    </div>
+    <div class="row" style="margin:22px 0 10px"><b style="font-size:13px;letter-spacing:.16em;color:#777">ZADNJE MONTAZE</b><button onclick="go('stranke')" style="background:0;color:#c1272d;font-weight:700">SVE</button></div>
+    <div class="list" id="homeList"></div>
+    <button class="btn btn-w" style="margin-top:16px" onclick="go('unos')">NOVI UNOS</button>
+  </section>
+  <section id="unos" class="hidden">
+    <h1>Novi projekt</h1>
+    <p class="muted">Unos za 30 sekundi na terenu.</p>
+    <label>IME I PREZIME</label><input id="fIme" placeholder="npr. Marko Kovac">
+    <label>TELEFON</label><input id="fTel" type="tel" placeholder="091 ...">
+    <label>ADRESA MONTAZE</label><input id="fAdr" placeholder="Mjesto, ulica">
+    <div class="grid2">
+      <div><label>MATERIJAL</label><select id="fMat"><option>SPC</option><option>MDF</option><option>WPC</option><option>SPC + MDF</option></select></div>
+      <div><label>STATUS</label><select id="fSt"><option value="dogovor">Dogovor</option><option value="u_tijeku">U tijeku</option><option value="zavrseno">Zavrseno</option><option value="naplaceno">Naplaceno</option></select></div>
+    </div>
+    <div class="grid2" style="grid-template-columns:1fr 1fr 1fr">
+      <div><label>M2</label><input id="fM2" type="number" inputmode="decimal" placeholder="0"></div>
+      <div><label>CIJENA EUR</label><input id="fCij" type="number" inputmode="decimal" placeholder="0"></div>
+      <div><label>DATUM</label><input id="fDat" type="date"></div>
+    </div>
+    <label>NAPOMENA</label><textarea id="fNap" rows="3" placeholder="Podno grijanje..."></textarea>
+    <button class="btn btn-r" style="margin-top:18px" onclick="spremi()">SPREMI MONTAZU</button>
+  </section>
+  <section id="stranke" class="hidden">
+    <h1>Stranke</h1>
+    <div class="search"><input id="q" placeholder="Pretrazi ime, adresu, materijal..." oninput="crtaj()"></div>
+    <div class="list" id="allList"></div>
+  </section>
+  <section id="galerija" class="hidden">
+    <h1>Galerija radova</h1>
+    <p class="muted">SPC • MDF • WPC montaze</p>
+    <div class="grid2" style="margin-top:16px" id="gal"></div>
+  </section>
+</main>
+<nav class="nav"><div class="navin">
+  <button id="n-pocetna" class="on" onclick="go('pocetna')">POCETNA</button>
+  <button id="n-unos" onclick="go('unos')">UNOS</button>
+  <button id="n-stranke" onclick="go('stranke')">STRANKE</button>
+  <button id="n-galerija" onclick="go('galerija')">GALERIJA</button>
+</div></nav>
+<div id="del" class="modal hidden" onclick="if(event.target.id==='del')zatvori()"><div class="box">
+  <h3>Obrisati montazu?</h3>
+  <p class="muted">Trajno brises unos.</p>
+  <div class="grid2" style="margin-top:16px">
+    <button class="btn" style="background:#1e1e1e" onclick="zatvori()">NE</button>
+    <button class="btn btn-r" onclick="obrisi()">DA, OBRISI</button>
+  </div>
+</div></div>
+<script>
+const KEY='ekorustika_pwa_v3';
+const ST={
+  dogovor:{l:'DOGOVOR',c:'#a3a3a3',b:'#1a1a1a'},
+  u_tijeku:{l:'U TIJEKU',c:'#facc15',b:'#221f00'},
+  zavrseno:{l:'ZAVRSENO',c:'#1f8a3a',b:'#0f1f12'},
+  naplaceno:{l:'NAPLACENO',c:'#fff',b:'#1f8a3a'}
+};
+const DEMO=[
+  {id:'1',ime:'Marko Kovac',telefon:'091 234 5678',adresa:'Zagreb, Ilica 12',materijal:'SPC',kvadratura:42,cijena:3150,datum:'2025-11-18',status:'zavrseno',napomena:'Dnevni boravak'},
+  {id:'2',ime:'Ana Maric',telefon:'098 765 4321',adresa:'Sesvete, Kelekova 8',materijal:'WPC',kvadratura:28,cijena:4200,datum:'2025-11-20',status:'u_tijeku',napomena:'Terasna obloga'},
+  {id:'3',ime:'Ivan Horvat',telefon:'095 112 2334',adresa:'Velika Gorica',materijal:'MDF',kvadratura:18,cijena:1260,datum:'2025-11-22',status:'dogovor',napomena:'Zidna obloga'}
+];
+let data=[], delId=null;
+try{const r=JSON.parse(localStorage.getItem(KEY)||'[]');data=Array.isArray(r)&&r.length?r:DEMO}catch(e){data=DEMO}
+const save=function(){localStorage.setItem(KEY,JSON.stringify(data))};
+function badge(s){const x=ST[s]||ST.dogovor;return '<span class="badge" style="background:'+x.b+';color:'+x.c+'">'+x.l+'</span>'}
+function kartica(v,full){
+  return '<div class="item"><div class="row"><div><b>'+v.ime+'</b> '+badge(v.status)+'<div class="muted">'+v.adresa+' • '+v.kvadratura+' m2 • '+v.cijena+' EUR</div></div>'+(full?'<button onclick="pitaj(\''+v.id+'\')" style="background:#1a1a1a;border-radius:99px;width:36px;height:36px">X</button>':'')+'</div>'+(full?'<div class="muted" style="margin-top:8px">'+v.materijal+' • '+(v.telefon||'')+' • '+(v.napomena||'')+'</div>':'')+'</div>';
+}
+function crtaj(){
+  var t=data.reduce(function(a,v){return a+(+v.kvadratura||0)},0);
+  var e=data.reduce(function(a,v){return a+(+v.cijena||0)},0);
+  document.getElementById('cCount').textContent=data.length;
+  document.getElementById('cM2').textContent=t;
+  document.getElementById('cEur').textContent=e.toLocaleString('hr-HR')+' EUR';
+  document.getElementById('homeList').innerHTML=data.slice(0,3).map(function(v){return kartica(v,0)}).join('')||'<p class="muted">Nema unosa</p>';
+  var q=(document.getElementById('q').value||'').toLowerCase();
+  var f=data.filter(function(v){return [v.ime,v.adresa,v.telefon,v.materijal].join(' ').toLowerCase().indexOf(q)>=0});
+  document.getElementById('allList').innerHTML=f.map(function(v){return kartica(v,1)}).join('')||'<p class="muted">Nema rezultata</p>';
+}
+function go(id){
+  ['pocetna','unos','stranke','galerija'].forEach(function(s){
+    document.getElementById(s).classList.toggle('hidden',s!==id);
+    document.getElementById('n-'+s).classList.toggle('on',s===id);
+  });
+  if(id==='unos'&&!document.getElementById('fDat').value)document.getElementById('fDat').value=new Date().toISOString().slice(0,10);
+}
+function spremi(){
+  var ime=document.getElementById('fIme').value.trim();
+  var m2=document.getElementById('fM2').value;
+  var cij=document.getElementById('fCij').value;
+  if(!ime||!m2||!cij){alert('Upisi ime, m2 i cijenu');return}
+  data.unshift({id:Date.now().toString(),ime:ime,telefon:document.getElementById('fTel').value,adresa:document.getElementById('fAdr').value,materijal:document.getElementById('fMat').value,kvadratura:+m2,cijena:+cij,datum:document.getElementById('fDat').value,status:document.getElementById('fSt').value,napomena:document.getElementById('fNap').value});
+  save();
+  document.getElementById('fIme').value=document.getElementById('fTel').value=document.getElementById('fAdr').value=document.getElementById('fNap').value=document.getElementById('fM2').value=document.getElementById('fCij').value='';
+  go('stranke');crtaj();
+}
+function pitaj(id){delId=id;document.getElementById('del').classList.remove('hidden')}
+function zatvori(){document.getElementById('del').classList.add('hidden');delId=null}
+function obrisi(){data=data.filter(function(v){return v.id!==delId});save();zatvori();crtaj()}
+document.getElementById('gal').innerHTML=[['SPC podovi','Dnevni 42m2'],['WPC terasa','Anthracite 28m2'],['MDF zid','Spavaca 18m2'],['SPC + MDF','Hodnik']].map(function(x){return '<div class="card"><b>'+x[0]+'</b><div class="muted">'+x[1]+'</div></div>'}).join('');
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(function(){});
+crtaj();
+</script>
+</body>
+</html>
