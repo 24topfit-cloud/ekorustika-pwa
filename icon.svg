@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0a0a0a"/>
+  <text x="256" y="280" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="92">
+    <tspan fill="#c1272d">EKO</tspan><tspan fill="#1f8a3a">RUS</tspan><tspan fill="#ffffff">TIKA</tspan>
+  </text>
+  <rect x="150" y="320" width="90" height="8" fill="#c1272d"/>
+  <rect x="250" y="320" width="112" height="8" fill="#1f8a3a"/>
+</svg>
