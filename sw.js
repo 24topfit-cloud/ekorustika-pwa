@@ -1,4 +1,4 @@
-const CACHE = "ekorustika-v3";
+const CACHE = "ekorustika-v4";
 const PRECACHE = [
   "./",
   "./index.html",

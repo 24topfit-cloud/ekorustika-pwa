@@ -79,7 +79,7 @@ label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;color:#6
       <div><label>DATUM</label><input id="fDat" type="date"></div>
     </div>
     <label>NAPOMENA</label><textarea id="fNap" rows="3" placeholder="Podno grijanje..."></textarea>
-    <button class="btn btn-r" style="margin-top:18px" onclick="spremi()">SPREMI MONTAZU</button>
+    <button class="btn btn-r" style="margin-top:18px;margin-bottom:96px" onclick="spremi()">SPREMI MONTAZU</button>
   </section>
   <section id="stranke" class="hidden">
     <h1>Stranke</h1>
@@ -107,7 +107,8 @@ label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;color:#6
   </div>
 </div></div>
 <script>
-const KEY='ekorustika_pwa_v3';
+const KEY='ekorustika_pwa_v4';
+const FLAG='ekorustika_seen';
 const ST={
   dogovor:{l:'DOGOVOR',c:'#a3a3a3',b:'#1a1a1a'},
   u_tijeku:{l:'U TIJEKU',c:'#facc15',b:'#221f00'},
@@ -119,9 +120,20 @@ const DEMO=[
   {id:'2',ime:'Ana Maric',telefon:'098 765 4321',adresa:'Sesvete, Kelekova 8',materijal:'WPC',kvadratura:28,cijena:4200,datum:'2025-11-20',status:'u_tijeku',napomena:'Terasna obloga'},
   {id:'3',ime:'Ivan Horvat',telefon:'095 112 2334',adresa:'Velika Gorica',materijal:'MDF',kvadratura:18,cijena:1260,datum:'2025-11-22',status:'dogovor',napomena:'Zidna obloga'}
 ];
-let data=[], delId=null;
-try{const r=JSON.parse(localStorage.getItem(KEY)||'[]');data=Array.isArray(r)&&r.length?r:DEMO}catch(e){data=DEMO}
-const save=function(){localStorage.setItem(KEY,JSON.stringify(data))};
+function loadData(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(raw!==null){
+      var r=JSON.parse(raw);
+      if(Array.isArray(r)) return r;
+    }
+  }catch(e){}
+  if(localStorage.getItem(FLAG)==='1') return [];
+  localStorage.setItem(FLAG,'1');
+  return DEMO.slice();
+}
+let data=loadData(), delId=null;
+const save=function(){localStorage.setItem(FLAG,'1');localStorage.setItem(KEY,JSON.stringify(data))};
 function badge(s){const x=ST[s]||ST.dogovor;return '<span class="badge" style="background:'+x.b+';color:'+x.c+'">'+x.l+'</span>'}
 function kartica(v,full){
   return '<div class="item"><div class="row"><div><b>'+v.ime+'</b> '+badge(v.status)+'<div class="muted">'+v.adresa+' • '+v.kvadratura+' m2 • '+v.cijena+' EUR</div></div>'+(full?'<button onclick="pitaj(\''+v.id+'\')" style="background:#1a1a1a;border-radius:99px;width:36px;height:36px">X</button>':'')+'</div>'+(full?'<div class="muted" style="margin-top:8px">'+v.materijal+' • '+(v.telefon||'')+' • '+(v.napomena||'')+'</div>':'')+'</div>';
