@@ -8,7 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="EKORUSTIKA">
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./icon.svg">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui,-apple-system,sans-serif}
@@ -43,6 +44,11 @@ label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;color:#6
 .modal{position:fixed;inset:0;background:#000b;display:grid;place-items:center;padding:20px;z-index:50}
 .box{background:#161616;border:1px solid #242424;border-radius:24px;padding:24px;max-width:360px;width:100%}
 .live{font-size:10px;letter-spacing:.18em;color:#666;font-weight:600}
+.install{background:#141414;border:1px solid #2a2a2a;border-radius:20px;padding:16px;margin:16px 0 8px}
+.install b{display:block;margin-bottom:8px}
+.install ol{margin:0;padding-left:18px;color:#8a8a8a;font-size:14px;line-height:1.55}
+.hidden.install,.standalone .install{display:none!important}
+.btn-inst{margin-top:12px;height:48px;border-radius:14px;background:#c1272d;color:#fff;font-weight:800;width:100%}
 </style>
 </head>
 <body>
@@ -61,6 +67,16 @@ label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;color:#6
     </div>
     <div class="row" style="margin:22px 0 10px"><b style="font-size:13px;letter-spacing:.16em;color:#777">ZADNJE MONTAZE</b><button onclick="go('stranke')" style="background:0;color:#c1272d;font-weight:700">SVE</button></div>
     <div class="list" id="homeList"></div>
+    <div class="install" id="installBox">
+      <b>Stavi app na početni zaslon</b>
+      <ol>
+        <li>Otvori ovu stranicu u <u>Safari</u> (iPhone) ili Chrome (Android)</li>
+        <li>iPhone: tapni gumb Dijeli (kvadrat sa strelicom gore)</li>
+        <li>Odaberi <u>Dodaj na početni zaslon</u></li>
+        <li>Android: izbornik ⋮ pa <u>Dodaj na početni zaslon</u> / Instaliraj</li>
+      </ol>
+      <button class="btn-inst" id="installBtn" style="display:none" onclick="instaliraj()">INSTALIRAJ</button>
+    </div>
     <button class="btn btn-w" style="margin-top:16px" onclick="go('unos')">NOVI UNOS</button>
   </section>
   <section id="unos" class="hidden">
@@ -170,6 +186,21 @@ function pitaj(id){delId=id;document.getElementById('del').classList.remove('hid
 function zatvori(){document.getElementById('del').classList.add('hidden');delId=null}
 function obrisi(){data=data.filter(function(v){return v.id!==delId});save();zatvori();crtaj()}
 document.getElementById('gal').innerHTML=[['SPC podovi','Dnevni 42m2'],['WPC terasa','Anthracite 28m2'],['MDF zid','Spavaca 18m2'],['SPC + MDF','Hodnik']].map(function(x){return '<div class="card"><b>'+x[0]+'</b><div class="muted">'+x[1]+'</div></div>'}).join('');
+
+if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){
+  document.documentElement.classList.add('standalone');
+}
+var deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();deferredPrompt=e;
+  var b=document.getElementById('installBtn');
+  if(b) b.style.display='block';
+});
+function instaliraj(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(function(){deferredPrompt=null;document.getElementById('installBtn').style.display='none'});
+}
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(function(){});
 crtaj();
 </script>

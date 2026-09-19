@@ -1,9 +1,12 @@
-const CACHE = "ekorustika-v4";
+const CACHE = "ekorustika-v5";
 const PRECACHE = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icon.svg"
+  "./icon.svg",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./apple-touch-icon.png"
 ];
 
 self.addEventListener("install", (e) => {
